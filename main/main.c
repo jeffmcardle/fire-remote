@@ -46,15 +46,23 @@
 #define IR_CODE_SELECT    0xF20D4040
 #define IR_CODE_BACK      0xBD424040
 #define IR_CODE_HOME      0x00000000  // Not mapped
-#define IR_CODE_PLAY      0x00000000  // Not mapped
+#define IR_CODE_PLAY      0xA8574040  // Pause/Play
 #define IR_CODE_VOL_UP    0x00000000  // Not mapped
 #define IR_CODE_VOL_DOWN  0x00000000  // Not mapped
+#define IR_CODE_MUTE      0xBF404040
+#define IR_CODE_FF        0xE6194040  // Fast Forward
+#define IR_CODE_REW       0xE9164040  // Rewind
+#define IR_CODE_APP_SW    0xBA454040  // App Switcher
 
 // HID Consumer Control Usage IDs
 #define HID_CC_PLAY_PAUSE   0xCD
 #define HID_CC_VOLUME_UP    0xE9
 #define HID_CC_VOLUME_DOWN  0xEA
 #define HID_CC_HOME         0x223
+#define HID_CC_MUTE         0xE2
+#define HID_CC_FAST_FWD     0xB3
+#define HID_CC_REWIND       0xB4
+#define HID_CC_APP_SWITCH   0x1A2  // Task Manager / App Switcher
 
 // GATT Service handles
 #define GATTS_NUM_HANDLE_HID    8
@@ -292,6 +300,18 @@ void handle_ir_code(uint32_t code) {
     } else if (code == IR_CODE_VOL_DOWN) {
         ESP_LOGI(HID_TAG, "IR: VOL DOWN");
         send_consumer_control(HID_CC_VOLUME_DOWN);
+    } else if (code == IR_CODE_MUTE) {
+        ESP_LOGI(HID_TAG, "IR: MUTE");
+        send_consumer_control(HID_CC_MUTE);
+    } else if (code == IR_CODE_FF) {
+        ESP_LOGI(HID_TAG, "IR: FAST FORWARD");
+        send_consumer_control(HID_CC_FAST_FWD);
+    } else if (code == IR_CODE_REW) {
+        ESP_LOGI(HID_TAG, "IR: REWIND");
+        send_consumer_control(HID_CC_REWIND);
+    } else if (code == IR_CODE_APP_SW) {
+        ESP_LOGI(HID_TAG, "IR: APP SWITCH");
+        send_keyboard_key(0x43);  // F10 key - often used for menu
     } else {
         ESP_LOGW(HID_TAG, "Unknown IR code: 0x%08lX", (unsigned long)code);
     }
